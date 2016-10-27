@@ -1,0 +1,22 @@
+{
+  "name": "mateuszblaszczyk/gpx-to-json",
+  "description": "It parses .gpx file to JSON with distance and timestamp",
+  "license": "MIT",
+  "keywords": [
+    "gpx", "json", "parser"
+  ],
+  "authors": [
+    {
+      "name": "Mateusz Blaszczyk"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "~5"
+  },
+  "autoload": {
+    "psr-4": {
+      "MateuszBlaszczyk\\GpxToJson\\": "src/"
+    }
+  }
+}
