@@ -2,6 +2,7 @@
 namespace MateuszBlaszczyk\GpxToJson;
 
 
+use SimpleXMLElement;
 use XMLReader;
 
 class Parser
@@ -14,6 +15,7 @@ class Parser
     {
         $this->xml = $xml;
         $this->vt = new ValueTransformer();
+        $this->distanceCalculator = new DistanceCalculator();
     }
 
     public function parse()
@@ -24,45 +26,36 @@ class Parser
          * {"altitude":112.5,"latitude":52.231231,"type":"start","timestamp":0,"longitude":21.011354}
          */
 
-        $xmlReader = new XMLReader;
-        $xmlReader->xml($this->xml);
-        $timestamp = $this->getStartTimestamp($xmlReader);
+        /** @var SimpleXMLElement $gpx */
+        $gpx = simplexml_load_string($this->xml);
+        /* foreach ($results as $child){
+             var_dump($child->getName());
+             echo "a\r\n";
+         }*/
 
         $trackpoint = new Trackpoint();
-        while ($xmlReader->read()) {
-            if ($xmlReader->nodeType == XMLReader::ELEMENT) {
+        /** @var SimpleXMLElement $trkpt */
+        foreach ($gpx->trk->trkseg->children() as $key => $trkpt) {
 
-                switch ($xmlReader->name) {
-                    case 'LatitudeDegrees':
-                        $node = $xmlReader->expand();
-                        $trackpoint->latitude = $this->vt->substrGPSCoordinate($node->nodeValue);
-                        break;
-                    case 'LongitudeDegrees':
-                        $node = $xmlReader->expand();
-                        $trackpoint->longitude = $this->vt->substrGPSCoordinate($node->nodeValue);
-                        break;
-                    case 'AltitudeMeters':
-                        $node = $xmlReader->expand();
-                        $trackpoint->altitude = $this->vt->roundAltitude($node->nodeValue);
-                        break;
-                    case 'DistanceMeters':
-                        $node = $xmlReader->expand();
-                        if ($xmlReader->depth > 4) {
-                            $trackpoint->distance = $this->vt->roundDistance($node->nodeValue);
-                        }
-                        break;
-                    case 'Time':
-                        $node = $xmlReader->expand();
-                        $trackpoint->timestamp = $this->vt->transformTime($node->nodeValue) - $timestamp;
-                        break;
-                }
+            $trackpoint->latitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lat']);
+            $trackpoint->longitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lon']);
+            $trackpoint->altitude = $this->vt->roundAltitude($trkpt->ele);
+
+            if (isset($timestamp)) {
+                $trackpoint->timestamp = $this->vt->transformTime($trkpt->time) - $timestamp;
+            } else {
+                $timestamp = $trackpoint->timestamp = $this->vt->transformTime($trkpt->time);
+            }
+            if (count($results) == 0) {
+                $trackpoint->distance = 0;
+            } elseif (isset($trackpoint->longitude) && isset($trackpoint->latitude)) {
+                $trackpoint->distance = $this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $results[count($results) - 1]);
             }
 
             if ($trackpoint->isComplete()) {
-                $results[] = $trackpoint->serialize();
-                unset($trackpoint);
-                $trackpoint = new Trackpoint();
+                $results[] = clone $trackpoint;
             }
+            var_dump($trackpoint);
         }
 
         return $results;
@@ -74,22 +67,5 @@ class Parser
         return json_encode($results);
     }
 
-    public function getStartTimestamp(XMLReader $xmlReader)
-    {
-        $timeString = false;
-        while ($xmlReader->read()) {
-            if ($xmlReader->nodeType == XMLReader::ELEMENT && $xmlReader->name == 'Lap') {
-                $timeString = $xmlReader->getAttribute('StartTime');
-                break;
-            }
-        }
-
-        if (!$timeString) {
-            return false;
-        }
-
-        $timestamp = $this->vt->transformTime($timeString);
-        return $timestamp;
-    }
 
 }
