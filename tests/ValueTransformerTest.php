@@ -20,14 +20,12 @@ class ValueTransformerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('51.772699', $result);
     }
 
-
     public function testSubstrGPSCoordinateValid2()
     {
         $vt = new ValueTransformer();
         $result = $vt->substrGPSCoordinate('19.422850728034973');
         $this->assertEquals('19.422850', $result);
     }
-
 
     public function testSubstrGPSCoordinateValid3()
     {
@@ -36,14 +34,12 @@ class ValueTransformerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('192.123456', $result);
     }
 
-
     public function testSubstrGPSCoordinateValid4()
     {
         $vt = new ValueTransformer();
         $result = $vt->substrGPSCoordinate('192.1234567');
         $this->assertEquals('192.123456', $result);
     }
-
 
     public function testSubstrGPSCoordinateValid5()
     {
@@ -52,46 +48,60 @@ class ValueTransformerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('192.12', $result);
     }
 
-    public function testRoundDistance1()
+    public function testRoundDistanceMetersToKilometers1()
     {
         $vt = new ValueTransformer();
-        $result = $vt->roundDistance('0.0');
+        $result = $vt->roundDistanceMetersToKilometers('0.0');
         $this->assertEquals('0.0', $result);
     }
 
-    public function testRoundDistance2()
+    public function testRoundDistanceMetersToKilometers2()
     {
         $vt = new ValueTransformer();
-        $result = $vt->roundDistance('0.00');
+        $result = $vt->roundDistanceMetersToKilometers('0.00');
         $this->assertEquals('0.00', $result);
     }
 
-    public function testRoundDistance3()
+    public function testRoundDistanceMetersToKilometers3()
     {
         $vt = new ValueTransformer();
-        $result = $vt->roundDistance('0.000');
+        $result = $vt->roundDistanceMetersToKilometers('0.000');
         $this->assertEquals('0.000', $result);
     }
 
-    public function testRoundDistance4()
+    public function testRoundDistanceMetersToKilometers4()
     {
         $vt = new ValueTransformer();
-        $result = $vt->roundDistance('0.999');
+        $result = $vt->roundDistanceMetersToKilometers('0.999');
         $this->assertEquals('0.00100', $result);
     }
 
-    public function testRoundDistance5()
+    public function testRoundDistanceMetersToKilometers5()
     {
         $vt = new ValueTransformer();
-        $result = $vt->roundDistance('0');
+        $result = $vt->roundDistanceMetersToKilometers('0');
         $this->assertEquals('0.00', $result);
     }
 
-    public function testRoundDistance6()
+    public function testRoundDistanceMetersToKilometers6()
     {
         $vt = new ValueTransformer();
-        $result = $vt->roundDistance('8.969829090263627');
+        $result = $vt->roundDistanceMetersToKilometers('8.969829090263627');
         $this->assertEquals('0.00897', $result);
+    }
+
+    public function testRoundDistanceMetersToKilometers7()
+    {
+        $vt = new ValueTransformer();
+        $result = $vt->roundDistanceMetersToKilometers('1');
+        $this->assertEquals('0.001', $result);
+    }
+
+    public function testRoundDistance1()
+    {
+        $vt = new ValueTransformer();
+        $result = $vt->roundDistance('0.00123');
+        $this->assertEquals('0.00123', $result);
     }
 
     public function testRoundAltitude1()
@@ -127,6 +137,13 @@ class ValueTransformerTest extends PHPUnit_Framework_TestCase
         $vt = new ValueTransformer();
         $result = $vt->roundAltitude('202.0');
         $this->assertEquals('202.00', $result);
+    }
+
+    public function testRoundAltitude6()
+    {
+        $vt = new ValueTransformer();
+        $result = $vt->roundAltitude('212.9');
+        $this->assertEquals(212.9, $result);
     }
 
     public function testTransformTime1()

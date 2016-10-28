@@ -1,5 +1,11 @@
 <phpunit bootstrap="tests/bootstrap.php"
-         colors="true">
+         colors="true"
+         stopOnError=" false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         stopOnRisky="false"
+>
     <testsuites>
         <testsuite name="parser">
             <file>tests/ParserTest.php</file>

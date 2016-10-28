@@ -3,7 +3,6 @@ namespace MateuszBlaszczyk\GpxToJson;
 
 
 use SimpleXMLElement;
-use XMLReader;
 
 class Parser
 {
@@ -28,34 +27,35 @@ class Parser
 
         /** @var SimpleXMLElement $gpx */
         $gpx = simplexml_load_string($this->xml);
-        /* foreach ($results as $child){
-             var_dump($child->getName());
-             echo "a\r\n";
-         }*/
 
-        $trackpoint = new Trackpoint();
         /** @var SimpleXMLElement $trkpt */
         foreach ($gpx->trk->trkseg->children() as $key => $trkpt) {
-
+            $trackpoint = new Trackpoint();
             $trackpoint->latitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lat']);
             $trackpoint->longitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lon']);
-            $trackpoint->altitude = $this->vt->roundAltitude($trkpt->ele);
+            $trackpoint->altitude = $this->vt->roundAltitude((string)$trkpt->ele);
 
             if (isset($timestamp)) {
                 $trackpoint->timestamp = $this->vt->transformTime($trkpt->time) - $timestamp;
             } else {
-                $timestamp = $trackpoint->timestamp = $this->vt->transformTime($trkpt->time);
+                $timestamp = $this->vt->transformTime($trkpt->time);
+                $trackpoint->timestamp = 0;
             }
             if (count($results) == 0) {
-                $trackpoint->distance = 0;
+                $trackpoint->distance = 0.0;
             } elseif (isset($trackpoint->longitude) && isset($trackpoint->latitude)) {
-                $trackpoint->distance = $this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $results[count($results) - 1]);
+                $lastTrackpoint = $results[count($results) - 1];
+                $trackpoint->distance = $lastTrackpoint->distance + $this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $lastTrackpoint));
+                //var_dump($this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $lastTrackpoint)));
             }
 
             if ($trackpoint->isComplete()) {
-                $results[] = clone $trackpoint;
+                $results[] = $trackpoint;
             }
-            var_dump($trackpoint);
+        }
+
+        foreach ($results as $key => &$t) {
+            $results[$key] = $t->serialize();
         }
 
         return $results;

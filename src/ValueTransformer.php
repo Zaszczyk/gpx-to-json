@@ -40,9 +40,14 @@ class ValueTransformer
         return round($value, $this->timestampAccuracy);
     }
 
+    public function roundDistanceMetersToKilometers($value)
+    {
+        return $this->roundDistance($value / 1000);
+    }
+
     public function roundDistance($value)
     {
-        return round($value / 1000, $this->distanceAccuracy);
+        return round($value, $this->distanceAccuracy);
     }
 
     public function transformTime($value)

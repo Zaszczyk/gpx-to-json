@@ -15,127 +15,95 @@ class ParserTest extends PHPUnit_Framework_TestCase
         return file_get_contents(__DIR__ . '/data/' . $filename);
     }
 
-
-    /**
-     * @group xml1
-     */
-    public function testParseXml1()
+    public function testParseGpxGpx()
     {
         $parser = new Parser($this->getDataFromGpxFile('gpx.gpx'));
         $results = $parser->parse();
-        $this->assertEquals(34, count($results));
+        $this->assertEquals(589, count($results));
 
         foreach ($results as $r) {
             $this->assertEquals(5, count($r));
         }
 
         $this->assertArraySubset([
-            'latitude' => '51.772699',
-            'longitude' => '19.422868',
-            'altitude' => '202.18',
-            'distance' => '0.0',
+            'latitude' => '51.77611',
+            'longitude' => '19.470749',
+            'altitude' => '213.4',
+            'distance' => '0',
             'timestamp' => '0'
         ], $results[0]);
 
         $this->assertArraySubset([
-            'latitude' => '51.772699',
-            'longitude' => '19.422868',
-            'altitude' => '202.18',
-            'distance' => '0.0',
-            'timestamp' => '5'
+            'latitude' => '51.776109',
+            'longitude' => '19.470731',
+            'altitude' => '213.4',
+            'distance' => '0.00124',
+            'timestamp' => '1'
         ], $results[1]);
 
         $this->assertArraySubset([
-            'latitude' => '51.772670',
-            'longitude' => '19.422824',
-            'altitude' => '202.09',
-            'distance' => '0.00439',
-            'timestamp' => '10'
+            'latitude' => '51.776107',
+            'longitude' => '19.470713',
+            'altitude' => '213.4',
+            'distance' => '0.00249',
+            'timestamp' => 2
         ], $results[2]);
+
+        /*$this->assertArraySubset([
+            'latitude' => '51.771882',
+            'longitude' => '19.463718',
+            'altitude' => '212.9',
+            'distance' => '0.92689',
+            'timestamp' => 596
+        ], $results[588]);*/
+
+        $this->assertEquals('51.771882', $results[588]['latitude']);
+        $this->assertEquals('19.463718', $results[588]['longitude']);
+        $this->assertEquals('212.9', $results[588]['altitude']);
+        $this->assertEquals('0.92689', $results[588]['distance']);
+        $this->assertEquals(596, $results[588]['timestamp']);
     }
 
-
-    /*public function testParseXml2()
+    public function testParseGpxLong()
     {
-        $parser = new Parser($this->getXml2());
+        $parser = new Parser($this->getDataFromGpxFile('long.gpx'));
         $results = $parser->parse();
-        $this->assertEquals(36, count($results));
+        $this->assertEquals(8036, count($results));
 
         foreach ($results as $r) {
             $this->assertEquals(5, count($r));
         }
-
         $this->assertArraySubset([
-            'latitude' => '51.772656',
-            'longitude' => '19.422962',
-            'altitude' => '284.01',
-            'distance' => '0.0',
+            'latitude' => '51.651836',
+            'longitude' => '19.271491',
+            'altitude' => '188.6',
+            'distance' => '0',
             'timestamp' => '0'
         ], $results[0]);
 
+
+        print_r($results[8035]);
         $this->assertArraySubset([
-            'latitude' => '51.772656',
-            'longitude' => '19.422962',
-            'altitude' => '284.01',
-            'distance' => '0.0',
-            'timestamp' => '5'
+            'latitude' => '51.651524',
+            'longitude' => '19.271405',
+            'altitude' => '187.6',
+            'distance' => '0.03519',
+            'timestamp' => '1'
         ], $results[1]);
 
         $this->assertArraySubset([
-            'latitude' => '51.772656',
-            'longitude' => '19.422962',
-            'altitude' => '284.01',
-            'distance' => '0.0',
-            'timestamp' => '9'
+            'latitude' => '51.651212',
+            'longitude' => '19.271323',
+            'altitude' => '187.3',
+            'distance' => '0.07034',
+            'timestamp' => 2
         ], $results[2]);
 
-        $this->assertArraySubset([
-            'latitude' => '51.772942',
-            'longitude' => '19.422948',
-            'altitude' => '193.75',
-            'distance' => '0.36918',
-            'timestamp' => '45'
-        ], $results[35]);
-    }*/
 
-    /**
-     * @group xml1
-     */
-    /*public function testParseXml3()
-    {
-        $parser = new Parser($this->getXml3());
-        $results = $parser->parse();
-        file_put_contents('json.json', json_encode($results));
-        $this->assertEquals(34, count($results));
-
-        foreach ($results as $r) {
-            $this->assertEquals(5, count($r));
-        }
-
-        $this->assertArraySubset([
-            'latitude' => '51.772699',
-            'longitude' => '19.422868',
-            'altitude' => '202.18',
-            'distance' => '0.0',
-            'timestamp' => '0'
-        ], $results[0]);
-
-        $this->assertArraySubset([
-            'latitude' => '51.772699',
-            'longitude' => '19.422868',
-            'altitude' => '202.18',
-            'distance' => '0.0',
-            'timestamp' => '5'
-        ], $results[1]);
-
-        $this->assertArraySubset([
-            'latitude' => '51.772670',
-            'longitude' => '19.422824',
-            'altitude' => '202.09',
-            'distance' => '0.00439',
-            'timestamp' => '10'
-        ], $results[2]);
+        $this->assertEquals('50.691631', $results[8035]['latitude']);
+        $this->assertEquals('17.951848', $results[8035]['longitude']);
+        $this->assertEquals('165.8', $results[8035]['altitude']);
+        $this->assertEquals('173.70902', $results[8035]['distance']);
+        $this->assertEquals(8035, $results[8035]['timestamp']);
     }
-
-  */
 }
