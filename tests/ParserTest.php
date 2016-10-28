@@ -60,7 +60,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('51.771882', $results[588]['latitude']);
         $this->assertEquals('19.463718', $results[588]['longitude']);
         $this->assertEquals('212.9', $results[588]['altitude']);
-        $this->assertEquals('0.92689', $results[588]['distance']);
+        $this->assertEquals('0.92689', (string)$results[588]['distance']);
         $this->assertEquals(596, $results[588]['timestamp']);
     }
 
@@ -103,7 +103,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('50.691631', $results[8035]['latitude']);
         $this->assertEquals('17.951848', $results[8035]['longitude']);
         $this->assertEquals('165.8', $results[8035]['altitude']);
-        $this->assertEquals('173.70902', $results[8035]['distance']);
+        $this->assertEquals('173.70902', (string)$results[8035]['distance']);
         $this->assertEquals(8035, $results[8035]['timestamp']);
     }
 }
