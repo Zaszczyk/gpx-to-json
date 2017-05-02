@@ -17,7 +17,7 @@ class Parser
         $this->distanceCalculator = new DistanceCalculator();
     }
 
-    public function parse()
+    public function parse($obligatoryAltitude = true)
     {
         $results = [];
 
@@ -49,7 +49,7 @@ class Parser
                 //var_dump($this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $lastTrackpoint)));
             }
 
-            if ($trackpoint->isComplete()) {
+            if ($trackpoint->isComplete($obligatoryAltitude)) {
                 $results[] = $trackpoint;
             }
         }

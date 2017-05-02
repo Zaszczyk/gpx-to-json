@@ -15,12 +15,13 @@ class Trackpoint implements \Serializable
 
     public $distance;
 
-    public function isComplete()
+    public function isComplete($obligatoryAltitude = true)
     {
-        if ($this->latitude && $this->longitude && $this->altitude && isset($this->distance)) {
+        if (($obligatoryAltitude && $this->latitude && $this->longitude && $this->altitude && isset($this->distance))
+            ||
+            ($obligatoryAltitude === false && $this->latitude && $this->longitude && isset($this->distance))) {
             return true;
         }
-
         return false;
     }
 
