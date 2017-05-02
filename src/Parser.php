@@ -45,7 +45,7 @@ class Parser
                 $trackpoint->distance = 0.0;
             } elseif (isset($trackpoint->longitude) && isset($trackpoint->latitude)) {
                 $lastTrackpoint = $results[count($results) - 1];
-                $trackpoint->distance = $lastTrackpoint->distance + $this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $lastTrackpoint));
+                $trackpoint->distance = $lastTrackpoint->distance + $this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints(clone $trackpoint, clone $lastTrackpoint));
                 //var_dump($this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $lastTrackpoint)));
             }
 
