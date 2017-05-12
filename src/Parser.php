@@ -1,4 +1,5 @@
 <?php
+
 namespace MateuszBlaszczyk\GpxToJson;
 
 
@@ -27,6 +28,10 @@ class Parser
 
         /** @var SimpleXMLElement $gpx */
         $gpx = simplexml_load_string($this->xml);
+
+        if (!isset($gpx->trk->trkseg)) {
+            return [];
+        }
 
         /** @var SimpleXMLElement $trkpt */
         foreach ($gpx->trk->trkseg->children() as $key => $trkpt) {
