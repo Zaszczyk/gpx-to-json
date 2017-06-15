@@ -29,13 +29,17 @@ class Parser
         /** @var SimpleXMLElement $gpx */
         $gpx = simplexml_load_string($this->xml);
 
+        if (!isset($gpx->trk->trkseg)) {
+            return [];
+        }
+
         foreach ($gpx->trk->children() as $key => $trkseg) {
             /** @var SimpleXMLElement $trkpt */
             foreach ($trkseg as $key => $trkpt) {
-                $trackpoint = new Trackpoint();
-                $trackpoint->latitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lat']);
-                $trackpoint->longitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lon']);
-                $trackpoint->altitude = $this->vt->roundAltitude((string)$trkpt->ele);
+            $trackpoint = new Trackpoint();
+            $trackpoint->latitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lat']);
+            $trackpoint->longitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lon']);
+            $trackpoint->altitude = $this->vt->roundAltitude((string)$trkpt->ele);
 
                 if (isset($timestamp)) {
                     $trackpoint->timestamp = $this->vt->transformTime($trkpt->time) - $timestamp;
