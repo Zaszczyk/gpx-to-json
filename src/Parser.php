@@ -1,4 +1,5 @@
 <?php
+
 namespace MateuszBlaszczyk\GpxToJson;
 
 
@@ -28,29 +29,31 @@ class Parser
         /** @var SimpleXMLElement $gpx */
         $gpx = simplexml_load_string($this->xml);
 
-        /** @var SimpleXMLElement $trkpt */
-        foreach ($gpx->trk->trkseg->children() as $key => $trkpt) {
-            $trackpoint = new Trackpoint();
-            $trackpoint->latitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lat']);
-            $trackpoint->longitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lon']);
-            $trackpoint->altitude = $this->vt->roundAltitude((string)$trkpt->ele);
+        foreach ($gpx->trk->children() as $key => $trkseg) {
+            /** @var SimpleXMLElement $trkpt */
+            foreach ($trkseg as $key => $trkpt) {
+                $trackpoint = new Trackpoint();
+                $trackpoint->latitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lat']);
+                $trackpoint->longitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lon']);
+                $trackpoint->altitude = $this->vt->roundAltitude((string)$trkpt->ele);
 
-            if (isset($timestamp)) {
-                $trackpoint->timestamp = $this->vt->transformTime($trkpt->time) - $timestamp;
-            } else {
-                $timestamp = $this->vt->transformTime($trkpt->time);
-                $trackpoint->timestamp = 0;
-            }
-            if (count($results) == 0) {
-                $trackpoint->distance = 0.0;
-            } elseif (isset($trackpoint->longitude) && isset($trackpoint->latitude)) {
-                $lastTrackpoint = $results[count($results) - 1];
-                $trackpoint->distance = $lastTrackpoint->distance + $this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints(clone $trackpoint, clone $lastTrackpoint));
-                //var_dump($this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $lastTrackpoint)));
-            }
+                if (isset($timestamp)) {
+                    $trackpoint->timestamp = $this->vt->transformTime($trkpt->time) - $timestamp;
+                } else {
+                    $timestamp = $this->vt->transformTime($trkpt->time);
+                    $trackpoint->timestamp = 0;
+                }
+                if (count($results) == 0) {
+                    $trackpoint->distance = 0.0;
+                } elseif (isset($trackpoint->longitude) && isset($trackpoint->latitude)) {
+                    $lastTrackpoint = $results[count($results) - 1];
+                    $trackpoint->distance = $lastTrackpoint->distance + $this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints(clone $trackpoint, clone $lastTrackpoint));
+                    //var_dump($this->vt->roundDistance($this->distanceCalculator->countDistanceBetween2Trackpoints($trackpoint, $lastTrackpoint)));
+                }
 
-            if ($trackpoint->isComplete($obligatoryAltitude)) {
-                $results[] = $trackpoint;
+                if ($trackpoint->isComplete($obligatoryAltitude)) {
+                    $results[] = $trackpoint;
+                }
             }
         }
 

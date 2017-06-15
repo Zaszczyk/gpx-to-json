@@ -97,4 +97,37 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('173.71077', (string)$results[8035]['distance']);
         $this->assertEquals(8035, $results[8035]['timestamp']);
     }
+
+    public function testParseGpxMultiTrkseg()
+    {
+        $parser = new Parser($this->getDataFromGpxFile('multi_trkseg.gpx'));
+        $results = $parser->parse();
+        $this->assertEquals(2147, count($results));
+
+        foreach ($results as $r) {
+            $this->assertEquals(5, count($r));
+        }
+
+        $this->assertArraySubset([
+            'latitude' => '54.459046',
+            'longitude' => '16.995018',
+            'altitude' => '112.74',
+            'distance' => '0',
+            'timestamp' => 12
+        ], $results[0]);
+
+        $this->assertArraySubset([
+            'latitude' => '54.458918',
+            'longitude' => '16.995383',
+            'altitude' => '87.74',
+            'distance' => '0.02755',
+            'timestamp' => '311'
+        ], $results[1]);
+
+        $this->assertEquals('54.58169', $results[2146]['latitude']);
+        $this->assertEquals('16.858467', $results[2146]['longitude']);
+        $this->assertEquals('39.53', $results[2146]['altitude']);
+        $this->assertEquals('54.81351', (string)$results[2146]['distance']);
+        $this->assertEquals(24450, $results[2146]['timestamp']);
+    }
 }
