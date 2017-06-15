@@ -33,7 +33,7 @@ class Parser
             return [];
         }
 
-        foreach ($gpx->trk->children() as $key => $trkseg) {
+        foreach ($gpx->trk->children() as $outerKey => $trkseg) {
             /** @var SimpleXMLElement $trkpt */
             foreach ($trkseg as $key => $trkpt) {
             $trackpoint = new Trackpoint();
