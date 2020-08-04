@@ -28,7 +28,13 @@ class DistanceCalculator
         }
 
         $dist = sin(deg2rad($geolocation1->latitude)) * sin(deg2rad($geolocation2->latitude)) + cos(deg2rad($geolocation1->latitude)) * cos(deg2rad($geolocation2->latitude)) * cos(deg2rad($theta));
+        if (1.0 === $dist) {
+            return 0;
+        }
         $dist = acos($dist);
+        if (0.0 === $dist) {
+            return 0;
+        }
         $dist = rad2deg($dist);
         $miles = $dist * 60 * 1.1515;
         $unit = strtoupper($unit);
