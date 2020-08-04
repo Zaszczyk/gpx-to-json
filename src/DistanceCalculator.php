@@ -31,7 +31,7 @@ class DistanceCalculator
         if (1.0 === $dist) {
             return 0;
         }
-        $dist = acos($dist);
+        $dist = acos(min(max($dist, -1.0), 1.0));
         if (0.0 === $dist) {
             return 0;
         }
