@@ -39,7 +39,7 @@ class Parser
             $trackpoint = new Trackpoint();
             $trackpoint->latitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lat']);
             $trackpoint->longitude = $this->vt->substrGPSCoordinate($trkpt->attributes()['lon']);
-            $trackpoint->altitude = $this->vt->roundAltitude((string)$trkpt->ele);
+            $trackpoint->altitude = $this->vt->roundAltitude((string)$trkpt->ele??0);
 
                 if (isset($timestamp)) {
                     $trackpoint->timestamp = $this->vt->transformTime($trkpt->time) - $timestamp;
