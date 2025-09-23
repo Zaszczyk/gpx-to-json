@@ -32,7 +32,7 @@ class ValueTransformer
 
     public function roundAltitude($value)
     {
-        return round($value, $this->altitudeAccuracy);
+        return round((float)$value, $this->altitudeAccuracy);
     }
 
     public function roundTimestamp($value)
